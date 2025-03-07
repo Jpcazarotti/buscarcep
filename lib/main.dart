@@ -15,6 +15,15 @@ void main() {
         backgroundColor: Color(0xff00416b),
         foregroundColor: Colors.white,
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xfff5ab0c),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
     ),
     home: const HomePage(),
   ));
