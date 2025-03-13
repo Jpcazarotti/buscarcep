@@ -1,3 +1,5 @@
+import 'package:buscarcep/politicadeprivacidade_page.dart';
+import 'package:buscarcep/sobrenos_page.dart';
 import 'package:flutter/material.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -24,12 +26,23 @@ class MenuDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text("Sobre o Buscar CEP"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SobreNos()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.policy_outlined),
             title: const Text("Política de Privacidade"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PoliticaDeDrivacidade()),
+              );
+            },
           ),
         ],
       ),

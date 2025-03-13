@@ -25,10 +25,30 @@ class _HomePageState extends State<HomePage> {
     final response =
         await http.get(Uri.parse("https://viacep.com.br/ws/$cep/json/"));
     setState(() {
-      _cepData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        _cepData = json.decode(response.body);
+        if (_cepData!.containsKey("erro")) {
+          _mostrarAlerta("CEP não encontrado.");
+          _cepData = null;
+        }
+      } else {
+        _mostrarAlerta("Erro ao buscar o CEP.");
+        _cepData = null;
+      }
+
       // print(_cepData);
     });
     setState(() => _isLoading = false);
+  }
+
+  void _mostrarAlerta(String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -75,58 +95,60 @@ class _HomePageState extends State<HomePage> {
             ),
             _isLoading
                 ? const LinearProgressIndicator()
-                : Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Informações do CEP",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                : _cepData != null
+                    ? Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Informações do CEP",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "CEP: ${_cepData?["cep"] ?? ""}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "Logradouro: ${_cepData?["logradouro"] ?? ""}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "Bairro: ${_cepData?["bairro"] ?? ""}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "Cidade: ${_cepData?["localidade"] ?? ""}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "Estado: ${_cepData?["uf"] ?? ""}",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "CEP: ${_cepData?["cep"] ?? ""}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Logradouro: ${_cepData?["logradouro"] ?? ""}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Bairro: ${_cepData?["bairro"] ?? ""}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Cidade: ${_cepData?["localidade"] ?? ""}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            "Estado: ${_cepData?["uf"] ?? ""}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                      )
+                    : Container(),
           ],
         ),
       ),
